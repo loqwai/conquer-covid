@@ -31,6 +31,12 @@ function App() {
   return (
     <div className="App">
       <pre>{JSON.stringify(population, null, 2)}</pre>
+      <svg>
+        {population.map(({x, y, infected}) => (
+
+        <circle x={x} y={y} fill={infected ? 'red' : 'green' }/>
+        ))}
+      </svg>
     </div>
   );
 }
