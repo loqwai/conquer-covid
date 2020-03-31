@@ -8,18 +8,14 @@ const relaxIterations = 2;
 const system = Particulate.ParticleSystem.create(PARTICLES_COUNT, relaxIterations);
 (window as any).system = system;
 
-var gravity = Particulate.DirectionalForce.create([0, -0.001, 0]);
-
-system.addForce(gravity);
-system.each((i: number) => {
-  if (i > 0 && i < PARTICLES_COUNT - 1) {
-    system.setPosition(i,
+for (let i = 0; i < PARTICLES_COUNT; i++) {
+    system.setPosition(
+      i,
       Math.random() * 10,
       Math.random() * 10,
-      Math.random() * 10)
-  }
-})
-
+      0
+    )
+}
 
 function App() {
   const [positions, setPositions] = React.useState(system.positions)
@@ -27,9 +23,8 @@ function App() {
   React.useEffect(() => {
     let stop = false;
     const animate = () => {
-      console.log('animate')
       system.tick(1);
-      setPositions(system.positions)
+      setPositions([...system.positions])
       if (stop) return
       window.requestAnimationFrame(animate);
     }

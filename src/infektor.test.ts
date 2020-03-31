@@ -46,3 +46,12 @@ describe("When two people are trapped in a room", () => {
         })
     })
 })
+
+describe("When there are 1000 rooms of 2 people, one infected in each", () => {
+    beforeEach(()=>{
+        let populations: any[] = new Array(1000)  
+        for(i = 0; i < 1000; i++){
+            const i = new Infector()
+        }
+    })    
+})
