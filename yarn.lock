@@ -7303,6 +7303,11 @@ parseurl@~1.3.2, parseurl@~1.3.3:
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.3.tgz#9da19e7bee8d12dff0513ed5b76957793bc2e8d4"
   integrity sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==
 
+particulate@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/particulate/-/particulate-0.3.3.tgz#f7ff02d0a4efcc33d98f95cac19f38c60f202fbd"
+  integrity sha1-9/8C0KTvzDPZj5XKwZ84xg8gL70=
+
 pascal-case@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/pascal-case/-/pascal-case-3.1.1.tgz#5ac1975133ed619281e88920973d2cd1f279de5f"
