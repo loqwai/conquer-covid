@@ -1,18 +1,18 @@
 import React from 'react';
 import './App.css';
-import Infektor from './infektor';
+import Infektor, { Person } from './infektor';
 
 const frameDelay = 100;
 
-const initialPopulation =  [{
-  x: 0,
-  y: 0,
-  infected: false
-}, {
-  x: 1,
-  y: 1,
-  infected: true
-}]
+const initialPopulation: Person[] =  []
+
+for (let i = 0; i < 10000; i++) {
+  initialPopulation.push({
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    infected: Math.random() < 0.02
+  })
+}
 
 function App() {
   const [population, setPopulation] = React.useState(initialPopulation)
@@ -30,13 +30,17 @@ function App() {
 
   return (
     <div className="App">
-      <pre>{JSON.stringify(population, null, 2)}</pre>
-      <svg>
-        {population.map(({x, y, infected}) => (
-
-        <circle x={x} y={y} fill={infected ? 'red' : 'green' }/>
+      <svg viewBox="0 0 100 100">
+        {population.map(({x, y, infected}, i) => (
+          <circle 
+            key={i} 
+            cx={x} 
+            cy={y} 
+            fill={infected ? 'red' : 'green' } 
+            r="0.5"/>
         ))}
       </svg>
+      <pre>{JSON.stringify(population, null, 2)}</pre>
     </div>
   );
 }
