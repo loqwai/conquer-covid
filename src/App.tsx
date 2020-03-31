@@ -11,8 +11,8 @@ const system = Particulate.ParticleSystem.create(PARTICLES_COUNT, relaxIteration
 for (let i = 0; i < PARTICLES_COUNT; i++) {
     system.setPosition(
       i,
-      Math.random() * 10,
-      Math.random() * 10,
+      Math.random() * 100,
+      Math.random() * 100,
       0
     )
 }
