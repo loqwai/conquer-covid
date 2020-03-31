@@ -24,4 +24,25 @@ describe("When two people are trapped in a room", () => {
             })
         })                
     })
+    describe("when nobody is infected", () => {
+        beforeEach(() => {
+            infector = new Infector({
+                population: [
+                    { infected: false },
+                    { infected: false },
+                ]
+            });
+        })
+        describe("when we wait 100 hours", () => {
+            beforeEach(() => {
+                state = infector.step(100)
+            })
+            test("person 2 should be infected", () => {
+                expect(state.population).toEqual([
+                    { infected: false },
+                    { infected: false },
+                ])
+            })
+        })
+    })
 })

@@ -6,15 +6,17 @@ const PARTICLES_COUNT = 5;
 const relaxIterations = 2;
 
 const system = Particulate.ParticleSystem.create(PARTICLES_COUNT, relaxIterations);
-var gravity = Particulate.DirectionalForce.create();
+(window as any).system = system;
+
+var gravity = Particulate.DirectionalForce.create([0, -0.001, 0]);
 
 system.addForce(gravity);
 system.each((i: number) => {
   if (i > 0 && i < PARTICLES_COUNT - 1) {
     system.setPosition(i,
-      (Math.random() - 0.5) * 20,
-      (Math.random() - 0.5) * 20,
-      (Math.random() - 0.5) * 20)
+      Math.random() * 10,
+      Math.random() * 10,
+      Math.random() * 10)
   }
 })
 
