@@ -1,57 +1,27 @@
 import Infector from './infektor'
 
-describe("When two people are trapped in a room", () => {
+describe("When two people are not practicing social distancing", () => {
     var infector:Infector
-    var state:any
     describe("when one person is infected", ()=>{
         beforeEach(() => {
             infector = new Infector({
                 population: [
-                    { infected: true },
-                    { infected: false },
+                    { infected: true, x: 0, y: 0 },
+                    { infected: false, x: 0, y: 1 },
                 ]
             });
         })
-        describe("when we wait 100 hours", ()=>{
+        describe("when an infection event occurs", ()=>{
             beforeEach(()=>{
-                state = infector.step(100)
+                infector.step()
             })
-            test("person 2 should become infected", () => {
-                expect(state.population).toEqual([
-                    { infected: true },
-                    { infected: true },
-                ])
+            test("person 2 should be infected", () => {
+                const pop = infector.getPopulation()
+                pop.forEach(p => {
+                    expect(p.infected).toBeTruthy()
+                });
+                expect(pop.length).toEqual(2)
             })
         })                
     })
-    describe("when nobody is infected", () => {
-        beforeEach(() => {
-            infector = new Infector({
-                population: [
-                    { infected: false },
-                    { infected: false },
-                ]
-            });
-        })
-        describe("when we wait 100 hours", () => {
-            beforeEach(() => {
-                state = infector.step(100)
-            })
-            test("person 2 should be infected", () => {
-                expect(state.population).toEqual([
-                    { infected: false },
-                    { infected: false },
-                ])
-            })
-        })
-    })
-})
-
-describe("When there are 1000 rooms of 2 people, one infected in each", () => {
-    beforeEach(()=>{
-        let populations: any[] = new Array(1000)  
-        for(i = 0; i < 1000; i++){
-            const i = new Infector()
-        }
-    })    
 })

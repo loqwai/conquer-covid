@@ -1,40 +1,36 @@
 import React from 'react';
 import './App.css';
-import * as Particulate from 'particulate'
+import Infektor from './infektor';
 
-const PARTICLES_COUNT = 5;
-const relaxIterations = 2;
+const frameDelay = 100;
 
-const system = Particulate.ParticleSystem.create(PARTICLES_COUNT, relaxIterations);
-(window as any).system = system;
-
-for (let i = 0; i < PARTICLES_COUNT; i++) {
-    system.setPosition(
-      i,
-      Math.random() * 100,
-      Math.random() * 100,
-      0
-    )
-}
+const initialPopulation =  [{
+  x: 0,
+  y: 0,
+  infected: false
+}, {
+  x: 1,
+  y: 1,
+  infected: true
+}]
 
 function App() {
-  const [positions, setPositions] = React.useState(system.positions)
+  const [population, setPopulation] = React.useState(initialPopulation)
 
   React.useEffect(() => {
-    let stop = false;
-    const animate = () => {
-      system.tick(1);
-      setPositions([...system.positions])
-      if (stop) return
-      window.requestAnimationFrame(animate);
-    }
-    window.requestAnimationFrame(animate);
-    return () => { stop = true }
+    const infektor = new Infektor({ population: initialPopulation })
+
+    const intervalId = setInterval(() => {
+      infektor.step();
+      setPopulation(infektor.getPopulation())
+    }, frameDelay)
+
+    return () => clearInterval(intervalId) 
   }, [])
 
   return (
     <div className="App">
-      <pre>{JSON.stringify(positions, null, 2)}</pre>
+      <pre>{JSON.stringify(population, null, 2)}</pre>
     </div>
   );
 }

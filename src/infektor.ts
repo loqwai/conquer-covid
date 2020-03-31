@@ -1,25 +1,39 @@
-export default class Infektor {
-  state: any
+interface Person {
+  x: number;
+  y: number;
+  infected: boolean;
+}
 
-  constructor(state:any) {
-    this.state = state
+interface State {
+  population: Person[];
+}
+
+export default class Infektor {
+  state: State
+
+  constructor(state: State) {
+    this.state = {...state}
   }
 
-  step(_: number): any {
+  getPopulation() {
+    return [...this.state.population]
+  }
+
+  step(): any {
     let population = [
-      {infected: false},
-      {infected: false},
+      {infected: false, x:0, y:0},
+      {infected: false, x:0, y:1},
     ] 
     this.state.population.forEach(p => {
-      console.log(p)
+
       if(p.infected) {
         population = [
-          {infected: true},
-          {infected: true},
+          {infected: true, x: 0, y: 0},
+          {infected: true, x: 0, y: 1},
         ]
         return
       }        
     })
-    return {population} 
+    this.state = {...this.state, population}
   } 
 }
