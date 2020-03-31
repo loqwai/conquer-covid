@@ -23,11 +23,16 @@ function App() {
   const [positions, setPositions] = React.useState(system.positions)
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
+    let stop = false;
+    const animate = () => {
+      console.log('animate')
       system.tick(1);
       setPositions(system.positions)
-    }, 1)
-    return () => clearInterval(interval)
+      if (stop) return
+      window.requestAnimationFrame(animate);
+    }
+    window.requestAnimationFrame(animate);
+    return () => { stop = true }
   }, [])
 
   return (
