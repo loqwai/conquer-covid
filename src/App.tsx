@@ -2,11 +2,11 @@ import React from 'react';
 import './App.css';
 import Infektor, { Person } from './infektor';
 
-const frameDelay = 1000;
+const frameDelay = 100;
 
 const initialPopulation: Person[] =  []
 
-const zoom = 3
+const zoom = 2
 
 for (let i = 0; i < 1000; i++) {
   initialPopulation.push({
@@ -20,7 +20,7 @@ function App() {
   const [population, setPopulation] = React.useState(initialPopulation)
 
   React.useEffect(() => {
-    const infektor = new Infektor({ population: initialPopulation })
+    const infektor = new Infektor({ population: initialPopulation, zoom })
 
     const animate = () => {
       infektor.step();
@@ -45,7 +45,6 @@ function App() {
             r="0.5"/>
         ))}
       </svg>
-      <pre>{JSON.stringify(population, null, 2)}</pre>
     </div>
   );
 }

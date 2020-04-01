@@ -8,12 +8,13 @@ describe("When two people are not practicing social distancing", () => {
                 population: [
                     { infected: true, x: 0, y: 0 },
                     { infected: false, x: 0, y: 1 },
-                ]
+                ],
+                zoom: 1,
             });
         })
         describe("when an infection event occurs", ()=>{
             beforeEach(()=>{
-                infector.step()
+                infector.infect()
             })
             test("person 2 should be infected", () => {
                 const pop = infector.getPopulation()
@@ -30,12 +31,13 @@ describe("When two people are not practicing social distancing", () => {
                 population: [
                     { infected: false, x: 0, y: 0 },
                     { infected: false, x: 0, y: 1 },
-                ]
+                ],
+                zoom: 1,
             });
         })
         describe("when an infection event occurs", () => {
             beforeEach(() => {
-                infector.step()
+                infector.infect()
             })
             test("person 2 should be infected", () => {
                 const pop = infector.getPopulation()
@@ -55,12 +57,13 @@ describe("When two people are practicing social distancing", () => {
                 population: [
                     { infected: true, x: 0, y: 0 },
                     { infected: false, x: 0, y: 2 },
-                ]
+                ],
+                zoom: 1,
             });
         })
         describe("when an infection event occurs", () => {
             beforeEach(() => {
-                infector.step()
+                infector.infect()
             })
             test("person 2 should not be infected", () => {
                 const pop = infector.getPopulation()
