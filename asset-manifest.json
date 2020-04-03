@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/odds-stabilizer/static/css/main.3267944d.chunk.css",
+    "main.js": "/odds-stabilizer/static/js/main.0c5dff9a.chunk.js",
+    "main.js.map": "/odds-stabilizer/static/js/main.0c5dff9a.chunk.js.map",
+    "runtime-main.js": "/odds-stabilizer/static/js/runtime-main.8713c291.js",
+    "runtime-main.js.map": "/odds-stabilizer/static/js/runtime-main.8713c291.js.map",
+    "static/js/2.dfaab5bd.chunk.js": "/odds-stabilizer/static/js/2.dfaab5bd.chunk.js",
+    "static/js/2.dfaab5bd.chunk.js.map": "/odds-stabilizer/static/js/2.dfaab5bd.chunk.js.map",
+    "index.html": "/odds-stabilizer/index.html",
+    "precache-manifest.53dac28657aad6a796b71ffeda941863.js": "/odds-stabilizer/precache-manifest.53dac28657aad6a796b71ffeda941863.js",
+    "service-worker.js": "/odds-stabilizer/service-worker.js",
+    "static/css/main.3267944d.chunk.css.map": "/odds-stabilizer/static/css/main.3267944d.chunk.css.map",
+    "static/js/2.dfaab5bd.chunk.js.LICENSE.txt": "/odds-stabilizer/static/js/2.dfaab5bd.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.8713c291.js",
+    "static/js/2.dfaab5bd.chunk.js",
+    "static/css/main.3267944d.chunk.css",
+    "static/js/main.0c5dff9a.chunk.js"
+  ]
+}
