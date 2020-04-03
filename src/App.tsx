@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { Person } from './infektor';
 import { Engine, Render, World, Bodies, Body } from "matter-js";
+import Matter from "matter-js"
 
 const initialPopulation: Person[] = []
 
@@ -28,13 +29,28 @@ function App() {
       element: element.current,
     })
 
-    const circles = initialPopulation.map(({ x, y }) => Bodies.circle(x, y, 5))
-    circles.forEach(c => {
-      Body.applyForce(c, { x: 1, y: 0 }, { x: 100, y: 0 })
-    })
+    const circles = initialPopulation.map(({ x, y }) =>
+      Bodies.circle(x, y, 10, {
+        inertia: 0,
+        friction: 0,
+        frictionAir: 0,
+        frictionStatic: 0,
+        restitution: 1,
+      }))
 
-    World.add(engine.world, circles);
+    circles.forEach(c => Body.setVelocity(c, { x: (Matter as any).Common.random(-10, 10), y: (Matter as any).Common.random(-10, 10) }))
+
+
     engine.world.gravity.y = 0;
+    World.add(engine.world, circles);
+
+    // walls
+    World.add(engine.world, [
+      Bodies.rectangle(400, 0, 800, 10, { isStatic: true }),
+      Bodies.rectangle(400, 600, 800, 10, { isStatic: true }),
+      Bodies.rectangle(800, 300, 10, 600, { isStatic: true }),
+      Bodies.rectangle(0, 300, 10, 600, { isStatic: true })
+    ]);
 
     Engine.run(engine);
     Render.run(render);
