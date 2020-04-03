@@ -16,7 +16,9 @@ for (let i = 0; i < 100; i++) {
   })
 }
 
-function App() {
+const random = (min: number, max: number): number => (Matter as any).Common.random(min, max)
+
+const App = () => {
 
   const element = React.useRef<HTMLDivElement>(null);
 
@@ -38,8 +40,7 @@ function App() {
         restitution: 1,
       }))
 
-    circles.forEach(c => Body.setVelocity(c, { x: (Matter as any).Common.random(-10, 10), y: (Matter as any).Common.random(-10, 10) }))
-
+    circles.forEach(c => Body.setVelocity(c, { x: random(-10, 10), y: random(-10, 10) }))
 
     engine.world.gravity.y = 0;
     World.add(engine.world, circles);
