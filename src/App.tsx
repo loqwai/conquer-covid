@@ -3,7 +3,6 @@ import * as R from 'ramda'
 import './App.css'
 import { Engine, World, Bodies, Body, Events } from "matter-js"
 import Matter from "matter-js"
-import { v4 as uuidv4 } from 'uuid'
 
 interface Person {
   x: number;
@@ -12,30 +11,22 @@ interface Person {
   id: number | undefined;
 }
 
-const initialPopulation: Person[] = []
-
-const zoom = 1
-
-for (let i = 0; i < 1000; i++) {
-  initialPopulation.push({
-    x: Math.random() * 800 / zoom,
-    y: Math.random() * 600 / zoom,
-    infected: Math.random() < 0.02,
-    id: undefined,
-  })
-}
 //don't worry about it
 const random = (min: number, max: number): number => (Matter as any).Common.random(min, max)
 const choose = (Matter as any).Common.choose as <T>(arg0: T[]) => T
 
 const App = () => {
-  const [population, setPopulation] = React.useState(initialPopulation)
+  const [population, setPopulation] = React.useState<Person[]>([])
 
   React.useEffect(() => {
     const engine = Engine.create()
 
-    const circles = initialPopulation.map(({ x, y }) =>
-      Bodies.circle(x, y, 5))
+    const circles: Body[] = R.times(() => Bodies.circle(random(0, 800), random(0, 600), 5), 1000)
+    setPopulation(circles.map(({ position, id }) => ({
+      ...position,
+      id,
+      infected: Math.random() < 0.02,
+    })))
 
     engine.world.gravity.y = 0
     World.add(engine.world, circles)
@@ -78,7 +69,7 @@ const App = () => {
 
     let stop = false
     const animate = () => {
-      setPopulation(population => circles.map<Person>((c, i) => ({ ...population[i], ...c.position, id: c.id })))
+      setPopulation(population => circles.map<Person>((c, i) => ({ ...population[i], ...c.position })))
 
       if (stop) return
       requestAnimationFrame(animate)
