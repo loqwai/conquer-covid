@@ -4,3 +4,12 @@ svg {
   flex: 1;
   max-width: 700px;
 }
+
+.framerate {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white;
+  padding: 0;
+  margin: 20px;
+}
