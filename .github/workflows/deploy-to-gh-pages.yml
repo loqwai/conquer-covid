@@ -22,7 +22,7 @@ jobs:
     - run: yarn install
     - run: yarn run build
       env:
-        PUBLIC_URL: /odds-stabilizer
+        PUBLIC_URL: /conquer-covid
     - name: GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
