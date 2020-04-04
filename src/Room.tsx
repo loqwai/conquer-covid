@@ -27,7 +27,7 @@ const generateCircle = () => (
 
 const currentUrl = new URL(window.location.href)
 const getPopulationSizeOrDefault = () => {
-  const defaultSize = 10
+  const defaultSize = 100
 
   const sizeString = currentUrl.searchParams.get('populationSize')
   if (!sizeString) return defaultSize
