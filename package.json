@@ -41,6 +41,7 @@
     ]
   },
   "devDependencies": {
-    "@types/matter-js": "^0.14.2"
+    "@types/matter-js": "^0.14.2",
+    "@types/ramda": "^0.27.3"
   }
 }

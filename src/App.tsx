@@ -1,33 +1,62 @@
 import React from 'react'
 import * as R from 'ramda'
 import './App.css'
-import { Engine, World, Bodies, Body, Events } from "matter-js"
-import Matter from "matter-js"
+import { Engine, World, Bodies, Body, Events } from 'matter-js'
+import Matter from 'matter-js'
+import SVGRenderer from './SVGRenderer'
+import useInterval from './hooks/useInterval'
 
 interface Person {
-  x: number;
-  y: number;
   infected: boolean;
   id: number | undefined;
 }
 
+interface Population {
+  [key: number]: Person;
+}
+
 //don't worry about it
 const random = (min: number, max: number): number => (Matter as any).Common.random(min, max)
-const choose = (Matter as any).Common.choose as <T>(arg0: T[]) => T
+const choose: <T> (list: T[] | undefined) => T | undefined = (list) => {
+  if (R.isNil(list)) return
+  return (Matter as any).Common.choose(list)
+}
+
+const generateCircle = () => (
+  Bodies.circle(random(0, 800), random(0, 600), 5, { 
+    render: { 
+      fillStyle: Math.random() < 0.02 ? 'red' : 'green'
+    }
+  })
+) 
+
+const currentUrl = new URL(window.location.href)
+const getPopulationSizeOrDefault = () => {
+  const defaultSize = 1000
+
+  const sizeString = currentUrl.searchParams.get('populationSize')
+  if (!sizeString) return defaultSize
+
+  const size = parseInt(sizeString, 10)
+  if (isNaN(size)) return defaultSize
+
+  return size
+}
 
 const App = () => {
-  const [population, setPopulation] = React.useState<Person[]>([])
+  const setPopulation = React.useState<Population>({})[1]
+  const [engine, setEngine] = React.useState<Engine | undefined>(undefined)
 
   React.useEffect(() => {
+    const circles: Body[] = R.times(generateCircle, getPopulationSizeOrDefault()) 
+    const people = circles.map(({ id, render: { fillStyle } }) => ({ 
+      id, 
+      infected: fillStyle === 'red' 
+    }))
+
+    setPopulation(R.indexBy(person => `${person.id}`, people))
+
     const engine = Engine.create()
-
-    const circles: Body[] = R.times(() => Bodies.circle(random(0, 800), random(0, 600), 5), 1000)
-    setPopulation(circles.map(({ position, id }) => ({
-      ...position,
-      id,
-      infected: Math.random() < 0.02,
-    })))
-
     engine.world.gravity.y = 0
     World.add(engine.world, circles)
 
@@ -46,13 +75,15 @@ const App = () => {
         pairs.forEach(pair => {
           const { bodyA, bodyB } = pair
 
-          const personA = R.find(R.propEq('id', bodyA.id), population)
-          const personB = R.find(R.propEq('id', bodyB.id), population)
+          const personA = population[bodyA.id]
+          const personB = population[bodyB.id]
 
-          if (R.isNil(personA) || R.isNil(personB)) return;
+          if (R.isNil(personA) || R.isNil(personB)) return
 
-          personA.infected = personA.infected || personB.infected
-          personB.infected = personA.infected
+          if (personA.infected || personB.infected) {
+            bodyA.render.fillStyle = bodyB.render.fillStyle = 'red'
+            personB.infected = personA.infected = true
+          }
         })
 
         return population
@@ -60,40 +91,20 @@ const App = () => {
     })
 
     Engine.run(engine)
+    setEngine(engine)
+  }, [setPopulation])
 
-    const interval = setInterval(() => {
-      const circle = choose(circles)
-      Body.applyForce(circle, { x: random(0, 800), y: random(0, 600) }, { x: random(-0.0001, 0.0001), y: random(-0.0001, 0.0001) })
-    }, 100)
+  useInterval(() => {
+    const body = choose(engine?.world.bodies)
+    if (!body) return // we probably got called before the engine exists
+    if (body.isStatic) return // it's probably a wall
 
-
-    let stop = false
-    const animate = () => {
-      setPopulation(population => circles.map<Person>((c, i) => ({ ...population[i], ...c.position })))
-
-      if (stop) return
-      requestAnimationFrame(animate)
-    }
-    requestAnimationFrame(animate)
-
-    return () => {
-      stop = true
-      clearInterval(interval)
-    }
-  }, [])
+    Body.applyForce(body, { x: random(0, 800), y: random(0, 600) }, { x: random(-0.0001, 0.0001), y: random(-0.0001, 0.0001) })
+  }, 100, [engine])
 
   return (
     <div className="App">
-      <svg viewBox={`0 0 800 600`}>
-        {population.map(({ x, y, infected, id }) => (
-          <circle
-            key={id}
-            cx={x}
-            cy={y}
-            fill={infected ? 'red' : 'green'}
-            r="5" />
-        ))}l
-      </svg>
+      <SVGRenderer engine={engine} />
     </div>
   )
 }
