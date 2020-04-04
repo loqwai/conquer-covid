@@ -4,22 +4,18 @@ import { Engine, World, Bodies, Body, Events } from 'matter-js'
 import Matter from 'matter-js'
 import SVGRenderer from './SVGRenderer'
 import useInterval from './hooks/useInterval'
-
+import {Chance} from 'chance'
 interface Person {
   infected: boolean;
   id: number | undefined;
 }
-
 interface Population {
   [key: number]: Person;
 }
-
+const chance = new Chance()
 //don't worry about it
-const random = (min: number, max: number): number => (Matter as any).Common.random(min, max)
-const choose: <T> (list: T[] | undefined) => T | undefined = (list) => {
-  if (R.isNil(list)) return
-  return (Matter as any).Common.choose(list)
-}
+const random = (min: number, max: number): number => chance.floating({ min, max })
+const choose: <T> (list: T[] | undefined) => T | undefined = (list) => chance.pick(list || [])
 
 const generateCircle = () => (
   Bodies.circle(random(0, 800), random(0, 600), 5, { 
@@ -31,7 +27,7 @@ const generateCircle = () => (
 
 const currentUrl = new URL(window.location.href)
 const getPopulationSizeOrDefault = () => {
-  const defaultSize = 1000
+  const defaultSize = 10
 
   const sizeString = currentUrl.searchParams.get('populationSize')
   if (!sizeString) return defaultSize
