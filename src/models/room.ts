@@ -32,25 +32,33 @@ class Room {
 
   constructor(population: number, size: Size) {
     this.size = size
-    
-    this.engine = Engine.create()
-    this.engine.world.gravity.y = 0
-    this.people = []
+    this.people = this.generatePopulation(population)
+    this.engine = this.setupEngine()
     this.generatePopulation(population)
   }
 
-  start() {}
+  start() {
+    const {engine, people} = this
+    const bodies = R.pluck('body', people)
+    World.add(engine.world, bodies)
+  }
+
+  setupEngine() {
+    const engine = Engine.create()
+    engine.world.gravity.y = 0
+    World.add(engine.world, [
+      Bodies.rectangle(400, 0, 800, 10, { isStatic: true }),
+      Bodies.rectangle(400, 600, 800, 10, { isStatic: true }),
+      Bodies.rectangle(800, 300, 10, 600, { isStatic: true }),
+      Bodies.rectangle(0, 300, 10, 600, { isStatic: true })
+    ])
+    return engine
+  }
 
   generatePopulation(population: number) {
-    const{people, size} = this
-    R.times(() => {
-      const p = new Person()
-      p.body.position = {
-        x: chance.integer({max: size.width}),
-        y: chance.integer({ max: size.width }),
-      }
-      people.push(p)
-    }, population)
+    const people: Person[] = new Array(population)
+    people.fill(new Person())
+    return people
   }
 
   createPerson(): Person {
