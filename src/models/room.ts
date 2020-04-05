@@ -2,7 +2,6 @@ import { Chance } from 'chance'
 import * as R from 'ramda'
 import {v4 as uuid} from 'uuid'
 import { Engine, World, Bodies, Body, Events } from 'matter-js'
-// import Matter from 'matter-js'
 
 export interface Person {
   infected: boolean
@@ -28,34 +27,39 @@ interface Size {
 
 const chance = new Chance()
 class Room {
-  population: Person[]
+  people: Person[]
   size: Size
-
   engine: Engine
-  constructor(population: Person[], size: Size) {
-    this.population = population
+
+  constructor(population: number, size: Size) {
     this.size = size
+    
     this.engine = Engine.create()
     this.engine.world.gravity.y = 0
+
+    this.generatePopulation(population)
   }
 
   start() {    
-    this.generatePopulation()
+
   }
 
-  generatePopulation() {
-    const { population, size } = this
-    R.forEach((p) => {
-      if (!p.position) {
-        p.position = {
+  generatePopulation(population: number) {
+    const people: Person[] = []
+    R.times(() => people.push(this.createPerson()), population)
+    this.people = people
+  }
+
+  createPerson(): Person {
+    const { size } = this
+    return {
+        id: uuid(),
+        infected: false,
+        position: {
           x: chance.integer({ max: size.width }),
           y: chance.integer({ max: size.height })
         }
-      }
-      if (!p.id) {
-        p.id = uuid()
-      }
-    }, population)
+    }
   }
 
 }
