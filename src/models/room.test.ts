@@ -12,3 +12,5 @@ test('Creating a room should create people', () => {
   const person = r.people[0]
   expect(person.name).toBeTruthy()
 })
+
+// test('Starting the room should cause them to move')

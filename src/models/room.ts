@@ -38,9 +38,24 @@ class Room {
   }
 
   start() {
-    const {engine, people} = this
-    const bodies = R.pluck('body', people)
-    World.add(engine.world, bodies)
+    const {engine} = this
+    this.generatePopulationPosition()
+    Engine.run(engine)
+  }
+
+  generatePopulationPosition() {
+    const { engine, people, size } = this
+    R.forEach(({ body }) => {
+      body.position = {
+        x: chance.integer({ max: size.width }),
+        y: chance.integer({ max: size.height }),
+      }
+      World.add(engine.world, body)
+    }, people)
+  }
+
+  step() {
+
   }
 
   setupEngine() {
@@ -55,6 +70,7 @@ class Room {
     return engine
   }
 
+  //This will eventually be done outside the room.
   generatePopulation(population: number) {
     const people: Person[] = new Array(population)    
     return people.fill(new Person())
