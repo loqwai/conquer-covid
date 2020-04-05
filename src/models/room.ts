@@ -56,27 +56,8 @@ class Room {
   }
 
   generatePopulation(population: number) {
-    const people: Person[] = new Array(population)
-    people.fill(new Person())
-    return people
-  }
-
-  createPerson(): Person {
-    const { size } = this
-    return {
-        id: uuid(),
-        infected: false,
-        position: {
-          x: chance.integer({ max: size.width }),
-          y: chance.integer({ max: size.height })
-        },
-        body: Bodies.circle(
-          chance.integer({max: size.width}),
-          chance.integer({max: size.height}),
-          1
-        ),
-        name: chance.name()
-    }
+    const people: Person[] = new Array(population)    
+    return people.fill(new Person())
   }
 
 }
