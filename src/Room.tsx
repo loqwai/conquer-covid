@@ -1,21 +1,6 @@
 import React from 'react'
-import * as R from 'ramda'
-import { Engine, World, Bodies, Body, Events } from 'matter-js'
-import Matter from 'matter-js'
 import SVGRenderer from './SVGRenderer'
 import useInterval from './hooks/useInterval'
-import {Chance} from 'chance'
-interface Person {
-  infected: boolean;
-  id: number | undefined;
-}
-interface Population {
-  [key: number]: Person;
-}
-const chance = new Chance()
-//don't worry about it
-const random = (min: number, max: number): number => chance.floating({ min, max })
-const choose: <T> (list: T[] | undefined) => T | undefined = (list) => chance.pick(list || [])
 
 const generateCircle = () => (
   Bodies.circle(random(0, 800), random(0, 600), 5, { 
@@ -24,7 +9,6 @@ const generateCircle = () => (
     }
   })
 ) 
-
 const currentUrl = new URL(window.location.href)
 const getPopulationSizeOrDefault = () => {
   const defaultSize = 100

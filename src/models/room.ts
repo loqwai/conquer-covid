@@ -2,12 +2,12 @@ import { Chance } from 'chance'
 import * as R from 'ramda'
 import {v4 as uuid} from 'uuid'
 import { Engine, World, Bodies, Body, Events } from 'matter-js'
-import Matter from 'matter-js'
+// import Matter from 'matter-js'
 
-interface Person {
+export interface Person {
   infected: boolean
-  id: string | undefined
-  position: Point | undefined
+  id?: string
+  position?: Point
 
 }
 
