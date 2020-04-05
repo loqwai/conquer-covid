@@ -37,7 +37,7 @@ class Room {
     
     this.engine = Engine.create()
     this.engine.world.gravity.y = 0
-
+    this.people = []
     this.generatePopulation(population)
   }
 
@@ -46,12 +46,11 @@ class Room {
   }
 
   generatePopulation(population: number) {
-    const people: Person[] = []
-    R.times(() => people.push(this.createPerson()), population)
-    this.people = people
+    const {people} = this
+    R.times(() => people.push(this.generatePerson()), population)
   }
 
-  createPerson(): Person {
+  generatePerson(): Person {
     const { size } = this
     return {
         id: uuid(),
