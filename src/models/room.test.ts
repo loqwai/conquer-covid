@@ -6,7 +6,9 @@ test('Can we make a room?', ()=>{
 })
 
 
-test('start() should generate an id', () => {
+test('Creating a room should create people', () => {
   const r = new Room(10, { height: 100, width: 200 })
   expect(r.people).toHaveLength(10)
+  const person = r.people[0]
+  expect(person.name).toBeTruthy()
 })
