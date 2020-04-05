@@ -5,9 +5,10 @@ import { Engine, World, Bodies, Body, Events } from 'matter-js'
 
 export interface Person {
   infected: boolean
-  id?: string
-  position?: Point
-
+  id: string
+  position: Point
+  body: Body
+  name?: string
 }
 
 interface Population {
@@ -58,7 +59,13 @@ class Room {
         position: {
           x: chance.integer({ max: size.width }),
           y: chance.integer({ max: size.height })
-        }
+        },
+        body: Bodies.circle(
+          chance.integer({max: size.width}),
+          chance.integer({max: size.height}),
+          1
+        ),
+        name: chance.name()
     }
   }
 

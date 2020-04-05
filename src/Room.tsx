@@ -9,18 +9,7 @@ const generateCircle = () => (
     }
   })
 ) 
-const currentUrl = new URL(window.location.href)
-const getPopulationSizeOrDefault = () => {
-  const defaultSize = 100
 
-  const sizeString = currentUrl.searchParams.get('populationSize')
-  if (!sizeString) return defaultSize
-
-  const size = parseInt(sizeString, 10)
-  if (isNaN(size)) return defaultSize
-
-  return size
-}
 
 const Room = () => {
   const setPopulation = React.useState<Population>({})[1]
