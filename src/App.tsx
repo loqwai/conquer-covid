@@ -1,11 +1,10 @@
 import React from 'react'
-import Room from './Room'
+import RoomUI from './Room2'
 
 const App = () => {
   return (
     <div className="World">
-      <Room/>
-      <Room/>
+      <RoomUI/>
     </div>
   )
 }

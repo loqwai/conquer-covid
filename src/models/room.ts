@@ -10,9 +10,6 @@ export class Person {
   position: Point = {x:0,y:0}
   name = chance.name()
   body = Bodies.circle(0,0,5)
-  constructor(){
-        
-  }
 }
 
 interface Point {
@@ -55,7 +52,7 @@ class Room {
   }
 
   step() {
-
+      Engine.update(this.engine)
   }
 
   setupEngine() {
