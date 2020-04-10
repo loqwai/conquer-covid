@@ -4,10 +4,6 @@ import { Population, Person } from './models/room'
 
 import './SVGRenderer.css'
 
-const verticesToPoints = (vertices: Matter.Vector[]) => (
-  vertices.map(({ x, y }) => `${x},${y}`).join(' ')
-)
-
 const PersonShape = ({ person }: { person: Person }) => (
   <>
     <text
