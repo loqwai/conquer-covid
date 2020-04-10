@@ -1,6 +1,5 @@
 import React from 'react'
 import * as R from 'ramda'
-import { Body, Engine } from 'matter-js'
 import { Population, Person } from './models/room'
 
 import './SVGRenderer.css'
