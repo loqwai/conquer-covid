@@ -50,10 +50,19 @@ class Room {
   }
 
   start = () => {
-    const { engine } = this
+    const { engine, population } = this
     Engine.run(engine)
     Events.on(engine, 'afterUpdate', () => {
       this.syncPopulationPosition()
+    })
+    Events.on(engine, 'collisionStart', ({ pairs }) => {
+      pairs.forEach(({ bodyA, bodyB }) => {
+        const p1 = population[bodyA.label]
+        if (!p1) return;
+        const p2 = population[bodyB.label]
+        if (!p2) return;
+        p1.infected = p2.infected = (p1.infected || p2.infected)
+      })
     })
   }
 
@@ -96,22 +105,24 @@ class Room {
 
   setupEngine = () => {
     const { size } = this
-    const wallWidth = 10
+    const wallWidth = 1000
     const engine = Engine.create()
     engine.world.gravity.y = 0
     World.add(engine.world, [
-      Bodies.rectangle(size.width / 2, 0, size.width, wallWidth, { isStatic: true }),
-      Bodies.rectangle(size.width, size.height / 2, wallWidth, size.height, { isStatic: true }),
-      Bodies.rectangle(size.width / 2, size.height, size.width, wallWidth, { isStatic: true }),
-      Bodies.rectangle(0, size.height / 2, wallWidth, size.height, { isStatic: true }),
+      Bodies.rectangle(size.width / 2, 0 - wallWidth / 2, size.width, wallWidth, { isStatic: true }),
+      Bodies.rectangle(size.width + wallWidth / 2, size.height / 2, wallWidth, size.height, { isStatic: true }),
+      Bodies.rectangle(size.width / 2, size.height + wallWidth / 2, size.width, wallWidth, { isStatic: true }),
+      Bodies.rectangle(0 - wallWidth / 2, size.height / 2, wallWidth, size.height, { isStatic: true }),
     ])
     return engine
   }
 
   //This will eventually be done outside the room.
-  generatePopulation = (population: number) => (
-    R.indexBy(R.prop('id'), R.times(createPerson, population))
-  )
+  generatePopulation = (population: number) => {
+    const people = R.times(createPerson, population)
+    chance.pickone(people).infected = true
+    return R.indexBy(R.prop('id'), people)
+  }
 }
 
 export default Room

@@ -9,7 +9,7 @@ const RoomUI = () => {
     const [room, setRoom] = React.useState<Room | undefined>(undefined)
 
     React.useEffect(() => {
-        setRoom(new Room(10, { height: 600, width: 800 }))
+        setRoom(new Room(10, { height: 60, width: 80 }))
     }, [])
 
     useInterval(room?.introduceEntropy, 100);
@@ -18,7 +18,7 @@ const RoomUI = () => {
 
     return (
         <div className="Room">
-            <SVGRenderer population={room.population} />
+            <SVGRenderer size={room.size} population={room.population} />
         </div>
     )
 }

@@ -18,9 +18,13 @@ const PersonShape = ({ person }: { person: Person }) => (
 
 interface Props {
   population: Population;
+  size: {
+    height: number;
+    width: number;
+  }
 }
 
-const SVGRenderer = ({ population }: Props) => {
+const SVGRenderer = ({ population, size }: Props) => {
   const setRenderCount = React.useState(0)[1]
 
   React.useEffect(() => {
@@ -38,7 +42,7 @@ const SVGRenderer = ({ population }: Props) => {
 
   if (!population) return null
 
-  return <svg viewBox="0 0 800 600">
+  return <svg viewBox={`0 0 ${size.width} ${size.height}`}>
     {R.values(population).map(person => <PersonShape key={person.id} person={person} />)}
   </svg>
 }
