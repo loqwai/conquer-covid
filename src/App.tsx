@@ -29,8 +29,11 @@ const App = () => {
 
     setRooms(rooms)
   }, [])
-
   
+  useInterval(() => {
+    setTime(moment.unix(time).add(10, 'minutes').unix())  
+  }, 1000)
+
   useInterval(() => {
     const r1 = chance.pickone(rooms)
     const r2 = chance.pickone(rooms)
@@ -40,8 +43,7 @@ const App = () => {
     r1.removePerson(person.id)
     r2.addPerson(person)    
 
-    rooms.forEach(r => r.introduceEntropy())
-    setTime(moment.unix(time).add(1, 'hours').unix())  
+    rooms.forEach(r => r.introduceEntropy())   
   }, 100)
 
   return (
