@@ -3,7 +3,7 @@ import * as R from 'ramda'
 import Room from './models/room'
 import { Chance } from 'chance'
 import './App.css'
-import { Person, createPerson } from './models/room'
+import {createPerson } from './models/room'
 import useInterval from './hooks/useInterval'
 import SVGRenderer from './SVGRenderer'
 const chance = new Chance()
