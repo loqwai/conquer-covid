@@ -10,21 +10,27 @@ import Town from './Town'
 
 const chance = new Chance()
 const moment = (Moment as any)
-const popCount = 10
-const roomCount = 1
+const popCount = 100
+const roomCount = 20
 
 const App = () => {  
-  const [time, setTime] = React.useState(moment().unix())
+  const [time, setTime] = React.useState(moment().unix())  
+  const [rooms, setRooms] = React.useState<Room[]>([])
+  
+  React.useEffect(() => {
+    const people = R.times(createPerson, popCount)
+    chance.pickone(people).infected = true
 
-  const people = R.times(createPerson, popCount)
-  chance.pickone(people).infected = true
-  const roomPops = R.splitEvery(popCount / roomCount, people)
+    const roomPops = R.splitEvery(popCount / roomCount, people)
+    const rooms = R.map(roomPop => {
+      const bigness = chance.integer({ min: 100, max: 400 })
+      return new Room(roomPop, { height: bigness, width: bigness })
+    }, roomPops)
 
-  const rooms = R.map(roomPop => {
-    const bigness = chance.integer({ min: 100, max: 400 })
-    return new Room(roomPop, { height: bigness, width: bigness })
-  }, roomPops)
+    setRooms(rooms)
+  }, [])
 
+  
   useInterval(() => {
     const r1 = chance.pickone(rooms)
     const r2 = chance.pickone(rooms)
@@ -40,8 +46,8 @@ const App = () => {
 
   return (
     <>
-    <h1>{moment.unix(time).format()}</h1>
-    <Town rooms={rooms} />    
+      <h1>{moment.unix(time).format()}</h1>
+      <Town rooms={rooms} />    
     </>
   )
 }
