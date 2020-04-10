@@ -3,6 +3,8 @@ import Room from './models/room'
 import SVGRenderer from './SVGRenderer'
 import useInterval from './hooks/useInterval'
 
+import './Room.css'
+
 const RoomUI = () => {
     const [room, setRoom] = React.useState<Room | undefined>(undefined)
 
@@ -16,7 +18,7 @@ const RoomUI = () => {
 
     return (
         <div className="Room">
-            <SVGRenderer engine={room.engine} />
+            <SVGRenderer population={room.population} />
         </div>
     )
 }

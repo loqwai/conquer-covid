@@ -1,12 +1,15 @@
 import React from 'react'
-import RoomUI from './Room'
+import Room from './Room'
+
+
 
 const App = () => {
   return (
     <div className="World">
-      <RoomUI/>
+      <Room />
     </div>
   )
 }
 
 export default App
+

@@ -4,11 +4,26 @@ import { v4 as uuid } from 'uuid'
 import { Engine, World, Bodies, Body, Events } from 'matter-js'
 
 const chance = new Chance()
-export class Person {
-  infected: boolean = false
-  id = uuid()
-  position: Point = { x: 0, y: 0 }
-  name = chance.name()
+
+export interface Person {
+  id: string;
+  infected: boolean;
+  position: {
+    x: number;
+    y: number;
+  }
+  name: string;
+}
+
+const createPerson = (): Person => ({
+  infected: false,
+  id: uuid(),
+  position: { x: 0, y: 0 },
+  name: chance.name(),
+})
+
+export interface Population {
+  [key: string]: Person
 }
 
 interface Point {
@@ -22,14 +37,14 @@ interface Size {
 }
 
 class Room {
-  people: Person[]
+  population: Population
   size: Size
   engine: Engine
 
-  constructor(population: number, size: Size) {
+  constructor(populationSize: number, size: Size) {
     this.size = size
     this.engine = this.setupEngine()
-    this.people = this.generatePopulation(population)
+    this.population = this.generatePopulation(populationSize)
     this.generatePopulationPosition();
     this.start()
   }
@@ -37,6 +52,9 @@ class Room {
   start = () => {
     const { engine } = this
     Engine.run(engine)
+    Events.on(engine, 'afterUpdate', () => {
+      this.syncPopulationPosition()
+    })
   }
 
   introduceEntropy = () => {
@@ -55,15 +73,25 @@ class Room {
   }
 
   generatePopulationPosition = () => {
-    const { engine, people, size } = this
-    R.forEach(() => {
+    const { engine, population: people, size } = this
+    R.forEach(({ id }) => {
       const body = Bodies.circle(
         chance.integer({ min: 0, max: size.width }),
         chance.integer({ min: 0, max: size.width }),
         5,
-      )
+        { label: id })
       World.add(engine.world, body)
-    }, people)
+    }, R.values(people))
+  }
+
+  syncPopulationPosition = () => {
+    const { engine, population } = this
+    R.forEach(body => {
+      if (!body.label) return;
+      const person = population[body.label]
+      if (!person) return
+      person.position = body.position
+    }, engine.world.bodies)
   }
 
   setupEngine = () => {
@@ -82,7 +110,7 @@ class Room {
 
   //This will eventually be done outside the room.
   generatePopulation = (population: number) => (
-    R.times(() => new Person(), population)
+    R.indexBy(R.prop('id'), R.times(createPerson, population))
   )
 }
 

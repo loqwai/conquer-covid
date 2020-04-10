@@ -1,28 +1,26 @@
 import React from 'react'
+import * as R from 'ramda'
 import { Body, Engine } from 'matter-js'
-
-interface Props {
-  engine: Engine | undefined
-}
+import { Population, Person } from './models/room'
 
 const verticesToPoints = (vertices: Matter.Vector[]) => (
   vertices.map(({ x, y }) => `${x},${y}`).join(' ')
 )
 
-const Polygon = ({ body }: { body: Body }) => (
-  <polygon points={verticesToPoints(body.vertices)} fill={body.render.fillStyle} />
-)
-
-const Circle = ({ body }: { body: Body }) => (
+const PersonShape = ({ person }: { person: Person }) => (
   <circle
-    cx={body.position.x}
-    cy={body.position.y}
-    fill={body.render.fillStyle}
-    r={body.circleRadius}
+    cx={person.position.x}
+    cy={person.position.y}
+    fill={person.infected ? 'red' : 'green'}
+    r="5"
   />
 )
 
-const SVGRenderer = ({ engine }: Props) => {
+interface Props {
+  population: Population;
+}
+
+const SVGRenderer = ({ population }: Props) => {
   const setRenderCount = React.useState(0)[1]
 
   React.useEffect(() => {
@@ -38,10 +36,10 @@ const SVGRenderer = ({ engine }: Props) => {
     return () => { stop = true }
   }, [setRenderCount])
 
-  if (!engine) return null
+  if (!population) return null
 
   return <svg viewBox="0 0 800 600">
-    {engine.world.bodies.map(body => body.circleRadius ? <Circle key={body.id} body={body} /> : <Polygon key={body.id} body={body} />)}
+    {R.values(population).map(person => <PersonShape key={person.id} person={person} />)}
   </svg>
 }
 
