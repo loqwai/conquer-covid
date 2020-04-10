@@ -1,15 +1,14 @@
 import { Chance } from 'chance'
 import * as R from 'ramda'
-import {v4 as uuid} from 'uuid'
+import { v4 as uuid } from 'uuid'
 import { Engine, World, Bodies, Body, Events } from 'matter-js'
 
 const chance = new Chance()
 export class Person {
   infected: boolean = false
   id = uuid()
-  position: Point = {x:0,y:0}
+  position: Point = { x: 0, y: 0 }
   name = chance.name()
-  body = Bodies.circle(0,0,5)
 }
 
 interface Point {
@@ -29,50 +28,47 @@ class Room {
 
   constructor(population: number, size: Size) {
     this.size = size
-    this.people = this.generatePopulation(population)
     this.engine = this.setupEngine()
-    this.generatePopulation(population)
+    this.people = this.generatePopulation(population)
+    this.generatePopulationPosition();
+    this.start()
   }
 
-  start() {
-    const {engine} = this
-    this.generatePopulationPosition()
+  start = () => {
+    const { engine } = this
     Engine.run(engine)
   }
 
-  generatePopulationPosition() {
+  generatePopulationPosition = () => {
     const { engine, people, size } = this
-    R.forEach(({ body }) => {
-      body.position = {
-        x: chance.integer({ max: size.width }),
-        y: chance.integer({ max: size.height }),
-      }
+    R.forEach(() => {
+      const body = Bodies.circle(
+        chance.integer({ min: 0, max: size.width }),
+        chance.integer({ min: 0, max: size.width }),
+        5,
+      )
       World.add(engine.world, body)
     }, people)
   }
 
-  step() {
-      Engine.update(this.engine)
-  }
-
-  setupEngine() {
+  setupEngine = () => {
+    const { size } = this
+    const wallWidth = 10
     const engine = Engine.create()
     engine.world.gravity.y = 0
     World.add(engine.world, [
-      Bodies.rectangle(400, 0, 800, 10, { isStatic: true }),
-      Bodies.rectangle(400, 600, 800, 10, { isStatic: true }),
-      Bodies.rectangle(800, 300, 10, 600, { isStatic: true }),
-      Bodies.rectangle(0, 300, 10, 600, { isStatic: true })
+      Bodies.rectangle(size.width / 2, 0, size.width, wallWidth, { isStatic: true }),
+      Bodies.rectangle(size.width, size.height / 2, wallWidth, size.height, { isStatic: true }),
+      Bodies.rectangle(size.width / 2, size.height, size.width, wallWidth, { isStatic: true }),
+      Bodies.rectangle(0, size.height / 2, wallWidth, size.height, { isStatic: true }),
     ])
     return engine
   }
 
   //This will eventually be done outside the room.
-  generatePopulation(population: number) {
-    const people: Person[] = new Array(population)    
-    return people.fill(new Person())
-  }
-
+  generatePopulation = (population: number) => (
+    R.times(() => new Person(), population)
+  )
 }
 
 export default Room

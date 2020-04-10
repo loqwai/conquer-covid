@@ -6,19 +6,19 @@ interface Props {
 }
 
 const verticesToPoints = (vertices: Matter.Vector[]) => (
-  vertices.map(({x, y}) => `${x},${y}`).join(' ')
+  vertices.map(({ x, y }) => `${x},${y}`).join(' ')
 )
 
 const Polygon = ({ body }: { body: Body }) => (
-  <polygon points={verticesToPoints(body.vertices)} />
+  <polygon points={verticesToPoints(body.vertices)} fill={body.render.fillStyle} />
 )
 
 const Circle = ({ body }: { body: Body }) => (
-  <circle 
-    cx={body.position.x} 
-    cy={body.position.y} 
-    fill={body.render.fillStyle} 
-    r={body.circleRadius}  
+  <circle
+    cx={body.position.x}
+    cy={body.position.y}
+    fill={body.render.fillStyle}
+    r={body.circleRadius}
   />
 )
 
