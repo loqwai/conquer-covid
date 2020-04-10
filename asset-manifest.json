@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/conquer-covid/static/css/main.6ecf0d28.chunk.css",
-    "main.js": "/conquer-covid/static/js/main.960d23e2.chunk.js",
-    "main.js.map": "/conquer-covid/static/js/main.960d23e2.chunk.js.map",
+    "main.js": "/conquer-covid/static/js/main.e7f3d685.chunk.js",
+    "main.js.map": "/conquer-covid/static/js/main.e7f3d685.chunk.js.map",
     "runtime-main.js": "/conquer-covid/static/js/runtime-main.0ca92d00.js",
     "runtime-main.js.map": "/conquer-covid/static/js/runtime-main.0ca92d00.js.map",
     "static/js/2.ae2fc8da.chunk.js": "/conquer-covid/static/js/2.ae2fc8da.chunk.js",
     "static/js/2.ae2fc8da.chunk.js.map": "/conquer-covid/static/js/2.ae2fc8da.chunk.js.map",
     "index.html": "/conquer-covid/index.html",
-    "precache-manifest.142ad50c22801ad2e793d72cbd087ddd.js": "/conquer-covid/precache-manifest.142ad50c22801ad2e793d72cbd087ddd.js",
+    "precache-manifest.90e996c43bcb1d63024607cec4ea9736.js": "/conquer-covid/precache-manifest.90e996c43bcb1d63024607cec4ea9736.js",
     "service-worker.js": "/conquer-covid/service-worker.js",
     "static/css/main.6ecf0d28.chunk.css.map": "/conquer-covid/static/css/main.6ecf0d28.chunk.css.map",
     "static/js/2.ae2fc8da.chunk.js.LICENSE.txt": "/conquer-covid/static/js/2.ae2fc8da.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.0ca92d00.js",
     "static/js/2.ae2fc8da.chunk.js",
     "static/css/main.6ecf0d28.chunk.css",
-    "static/js/main.960d23e2.chunk.js"
+    "static/js/main.e7f3d685.chunk.js"
   ]
 }
