@@ -10,6 +10,8 @@ const RoomUI = () => {
         setRoom(new Room(10, { height: 600, width: 800 }))
     }, [])
 
+    useInterval(room?.introduceEntropy, 100);
+
     if (!room) return <h1>Loading</h1>
 
     return (

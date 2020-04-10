@@ -39,6 +39,21 @@ class Room {
     Engine.run(engine)
   }
 
+  introduceEntropy = () => {
+    const { engine, size } = this
+    const body = chance.pickone(engine.world.bodies)
+    if (!body) return // we probably got called before the engine exists
+    if (body.isStatic) return // it's probably a wall
+
+    Body.applyForce(body, {
+      x: chance.integer({ min: 0, max: size.width }),
+      y: chance.integer({ min: 0, max: size.height }),
+    }, {
+      x: chance.floating({ min: -0.0001, max: 0.0001 }),
+      y: chance.floating({ min: -0.0001, max: 0.0001 }),
+    })
+  }
+
   generatePopulationPosition = () => {
     const { engine, people, size } = this
     R.forEach(() => {
