@@ -15,7 +15,7 @@ export interface Person {
   name: string;
 }
 
-const createPerson = (): Person => ({
+export const createPerson = (): Person => ({
   infected: false,
   id: uuid(),
   position: { x: 0, y: 0 },
@@ -41,12 +41,37 @@ class Room {
   size: Size
   engine: Engine
 
-  constructor(populationSize: number, size: Size) {
+  constructor(population: Person[], size: Size) {
     this.size = size
     this.engine = this.setupEngine()
-    this.population = this.generatePopulation(populationSize)
-    this.generatePopulationPosition();
+    this.population = {}
+    R.forEach(this.addPerson, population)
     this.start()
+
+    population.forEach(this.addPerson)
+  }
+
+  addPerson = (person: Person) => {
+    const { population, engine, size } = this
+    population[person.id] = person
+    const body = Bodies.circle(
+      chance.integer({ min: 0, max: size.width }),
+      chance.integer({ min: 0, max: size.width }),
+      5,
+      { label: person.id })
+    World.add(engine.world, body)
+  }
+
+  removePerson = (id: string) => {
+    const { population, engine } = this
+    delete population[id]
+    const body = R.find(R.propEq('label', id), engine.world.bodies)
+    if (!body) return;
+    World.remove(engine.world, body)
+  }
+
+  getPeople = () => {
+    return R.values(this.population)
   }
 
   start = () => {
@@ -58,9 +83,8 @@ class Room {
     Events.on(engine, 'collisionStart', ({ pairs }) => {
       pairs.forEach(({ bodyA, bodyB }) => {
         const p1 = population[bodyA.label]
-        if (!p1) return;
         const p2 = population[bodyB.label]
-        if (!p2) return;
+        if (!p2 || !p1) return;
         p1.infected = p2.infected = (p1.infected || p2.infected)
       })
     })
@@ -79,18 +103,6 @@ class Room {
       x: chance.floating({ min: -0.0001, max: 0.0001 }),
       y: chance.floating({ min: -0.0001, max: 0.0001 }),
     })
-  }
-
-  generatePopulationPosition = () => {
-    const { engine, population: people, size } = this
-    R.forEach(({ id }) => {
-      const body = Bodies.circle(
-        chance.integer({ min: 0, max: size.width }),
-        chance.integer({ min: 0, max: size.width }),
-        5,
-        { label: id })
-      World.add(engine.world, body)
-    }, R.values(people))
   }
 
   syncPopulationPosition = () => {
@@ -115,13 +127,6 @@ class Room {
       Bodies.rectangle(0 - wallWidth / 2, size.height / 2, wallWidth, size.height, { isStatic: true }),
     ])
     return engine
-  }
-
-  //This will eventually be done outside the room.
-  generatePopulation = (population: number) => {
-    const people = R.times(createPerson, population)
-    chance.pickone(people).infected = true
-    return R.indexBy(R.prop('id'), people)
   }
 }
 

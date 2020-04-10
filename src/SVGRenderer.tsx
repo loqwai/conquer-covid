@@ -3,17 +3,27 @@ import * as R from 'ramda'
 import { Body, Engine } from 'matter-js'
 import { Population, Person } from './models/room'
 
+import './SVGRenderer.css'
+
 const verticesToPoints = (vertices: Matter.Vector[]) => (
   vertices.map(({ x, y }) => `${x},${y}`).join(' ')
 )
 
 const PersonShape = ({ person }: { person: Person }) => (
-  <circle
-    cx={person.position.x}
-    cy={person.position.y}
-    fill={person.infected ? 'red' : 'green'}
-    r="5"
-  />
+  <>
+    <text
+      className="person-shape-face"
+      x={person.position.x - 5}
+      y={person.position.y + 5}
+    >{person.infected ? '🤮' : '🙂'}</text>
+    <text
+      className="person-shape-name"
+      x={person.position.x - 5}
+      y={person.position.y + 10}
+      lengthAdjust="spacingAndGlyphs"
+      textLength="10"
+    >{person.name}</text>
+  </>
 )
 
 interface Props {
@@ -42,7 +52,7 @@ const SVGRenderer = ({ population, size }: Props) => {
 
   if (!population) return null
 
-  return <svg viewBox={`0 0 ${size.width} ${size.height}`}>
+  return <svg viewBox={`0 0 ${size.width} ${size.height}`} style={size}>
     {R.values(population).map(person => <PersonShape key={person.id} person={person} />)}
   </svg>
 }
