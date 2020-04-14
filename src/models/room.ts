@@ -66,7 +66,7 @@ class Room {
     const { population, engine } = this
     delete population[id]
     const body = R.find(R.propEq('label', id), engine.world.bodies)
-    if (!body) return;
+    if (!body) return
     World.remove(engine.world, body)
   }
 
@@ -84,7 +84,7 @@ class Room {
       pairs.forEach(({ bodyA, bodyB }) => {
         const p1 = population[bodyA.label]
         const p2 = population[bodyB.label]
-        if (!p2 || !p1) return;
+        if (!p2 || !p1) return
         p1.infected = p2.infected = (p1.infected || p2.infected)
       })
     })
@@ -105,10 +105,15 @@ class Room {
     })
   }
 
+  toData = () => ({
+    population: this.population,
+    size: this.size
+  })
+
   syncPopulationPosition = () => {
     const { engine, population } = this
     R.forEach(body => {
-      if (!body.label) return;
+      if (!body.label) return
       const person = population[body.label]
       if (!person) return
       person.position = body.position
