@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import useAnimationFrame from './hooks/useAnimationFrame'
 import Room from './models/room'
 import RoomComponent from './Room'
@@ -10,6 +10,11 @@ interface Props {
 
 const Town = ({columnCount, rooms}: Props) => {
   const [roomsData, setRoomsData] = React.useState(rooms.map(r => r.toData()))
+
+  useEffect(() => {
+    console.log('Town construction')
+    return () => console.log('Town destruction')
+  }, [])
 
   useAnimationFrame(() => {
     setRoomsData(rooms.map(r => r.toData()))

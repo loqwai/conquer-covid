@@ -4,9 +4,9 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom' 
 import { Chance } from 'chance'
 import * as Moment from 'moment'
+import useInterval from '@use-it/interval'
 import './App.css'
 import Room, {createPerson} from './models/room'
-import useInterval from './hooks/useInterval'
 import Town from './Town'
 
 const moment = Moment as any
@@ -52,7 +52,7 @@ const App = () => {
     r2.addPerson(person)    
 
     rooms.forEach(r => r.introduceEntropy())   
-  }, 1000, [rooms])
+  }, 100)
 
   return (
     <div className="app">
