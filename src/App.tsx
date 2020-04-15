@@ -14,7 +14,7 @@ const moment = Moment as any
 const chance = new Chance()
 const popCount = 90
 const roomCount = 9
-const columnCount = 3 
+const columnCount = Math.floor(Math.sqrt(roomCount))
 const maxBigness = 400
 
 const rowCount = Math.floor(roomCount / columnCount)
