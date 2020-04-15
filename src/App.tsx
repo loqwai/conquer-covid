@@ -1,16 +1,18 @@
 import React from 'react'
 import * as R from 'ramda'
-import Room from './models/room'
 import RoomComponent from './Room'
-import { Chance } from 'chance'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom' 
+import { Chance } from 'chance'
+import * as Moment from 'moment'
 import './App.css'
-import {createPerson } from './models/room'
+import Room, {createPerson} from './models/room'
 import useInterval from './hooks/useInterval'
 import useAnimationFrame from './hooks/useAnimationFrame'
-const chance = new Chance()
 
+const moment = Moment as any
+
+const chance = new Chance()
 const popCount = 90
 const roomCount = 9
 const columnCount = 3 
@@ -29,11 +31,18 @@ const createRooms = () => {
 }
 
 const App = () => {
+  const [time, setTime] = React.useState<number>(moment().unix())  
   const [rooms, setRooms] = React.useState<ReturnType<typeof createRooms>>([])
+  const [roomsData, setRoomsData] = React.useState(rooms.map(r => r.toData()))
+
 
   React.useEffect(() => {
     setRooms(createRooms())
   }, [])
+
+  useInterval(() => {
+    setTime(t => moment.unix(t).add(10, 'minutes').unix())  
+  }, 1000)
 
   useInterval(() => {
     const r1 = chance.pickone(rooms)
@@ -43,14 +52,10 @@ const App = () => {
 
     const person = chance.pickone(r1.getPeople())
     r1.removePerson(person.id)
-    r2.addPerson(person)
-  }, 100)
+    r2.addPerson(person)    
 
-  useInterval(() => {
-    rooms.forEach(r => r.introduceEntropy())
-  }, 100)
-
-  const [roomsData, setRoomsData] = React.useState(rooms.map(r => r.toData()))
+    rooms.forEach(r => r.introduceEntropy())   
+  }, 1000, [rooms])
 
   useAnimationFrame(() => {
     setRoomsData(rooms.map(r => r.toData()))
@@ -58,6 +63,7 @@ const App = () => {
 
   return (
     <div className="app">
+      <h1>{moment.unix(time).format()}</h1>
       <AutoSizer>
         {({width, height}) => {
           return width && height && (
