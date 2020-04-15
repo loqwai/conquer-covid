@@ -1,6 +1,5 @@
 import React from 'react'
 import * as R from 'ramda'
-import RoomComponent from './Room'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom' 
 import { Chance } from 'chance'
@@ -8,7 +7,7 @@ import * as Moment from 'moment'
 import './App.css'
 import Room, {createPerson} from './models/room'
 import useInterval from './hooks/useInterval'
-import useAnimationFrame from './hooks/useAnimationFrame'
+import Town from './Town'
 
 const moment = Moment as any
 
@@ -33,8 +32,6 @@ const createRooms = () => {
 const App = () => {
   const [time, setTime] = React.useState<number>(moment().unix())  
   const [rooms, setRooms] = React.useState<ReturnType<typeof createRooms>>([])
-  const [roomsData, setRoomsData] = React.useState(rooms.map(r => r.toData()))
-
 
   React.useEffect(() => {
     setRooms(createRooms())
@@ -57,13 +54,8 @@ const App = () => {
     rooms.forEach(r => r.introduceEntropy())   
   }, 1000, [rooms])
 
-  useAnimationFrame(() => {
-    setRoomsData(rooms.map(r => r.toData()))
-  })
-
   return (
     <div className="app">
-      <h1>{moment.unix(time).format()}</h1>
       <AutoSizer>
         {({width, height}) => {
           return width && height && (
@@ -75,12 +67,13 @@ const App = () => {
               customMiniature={() => null}
             >
               <svg className="world" viewBox={`0 0 ${columnCount * maxBigness} ${rowCount * maxBigness}`}>
-                {roomsData.map((room, i) => <RoomComponent key={i} {...room} row={Math.floor(i / columnCount)} column={i % columnCount} />)}
+                <Town columnCount={columnCount} rooms={rooms} />
               </svg>
             </UncontrolledReactSVGPanZoom>
           )
         }}
       </AutoSizer>
+      <h1 className="time">{moment.unix(time).format()}</h1>
     </div>
   )
 }

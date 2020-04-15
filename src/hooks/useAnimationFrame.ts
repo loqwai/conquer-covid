@@ -11,7 +11,7 @@ const useAnimationFrame = (fn: () => void) => {
     requestAnimationFrame(animate)
 
     return () => { stop = true }
-  }, [fn])
+  }, [])
 }
 
 export default useAnimationFrame
