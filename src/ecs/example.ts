@@ -1,7 +1,7 @@
 
 import { World, System, Component, SystemStateComponent, Not } from 'ecsy'
 
-class Runner {
+class Game {
     world: World
     constructor() {
         this.world = new World()
@@ -95,4 +95,4 @@ MainSystem.queries = {
 };
 
 
-export default Runner
+export default Game

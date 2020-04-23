@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import Runner from './ecs/town'
+import Runner from './ecs/example'
 
 const r = new Runner()
 r.run()
