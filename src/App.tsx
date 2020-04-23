@@ -17,8 +17,7 @@ const chance = new Chance()
 const App = () => {
   const [time, setTime] = React.useState("")
   const [frame, setFrame] = React.useState(0)
-
-  const [frameDelta, setFrameDelta] = React.useState<number>(performance.now())  
+  const [delta, setDelta] = React.useState<number>(0)  
 
   const requestRef = React.useRef(0)
   const previousTimeRef = React.useRef(0)
@@ -30,24 +29,20 @@ const App = () => {
   }, [])
 
   React.useEffect(() => {
-    console.log('frameDelta', frameDelta)
+    console.log('delta', delta)
   }, [frame])
 
-  const animate = (t) => {  
-      console.log(frameDelta, t)
-      const deltaTime = t - previousTimeRef.current  
+  const animate = (t) => {        
+      const delta = t - previousTimeRef.current
       previousTimeRef.current = t
-      setFrameDelta(deltaTime)
-      setFrame(f => {
-        console.log("frame", f)
-        return f+1
-      })
+      setDelta(delta)
+      setFrame(f => f + 1)
       requestRef.current = requestAnimationFrame(animate)
   }
   
   return (
     <div className="app">      
-      <h1 className="time">{frame}</h1>
+      <h1 className="time">{frame}:{Number(delta).toFixed(4)}</h1>
     </div>
   )
 }
