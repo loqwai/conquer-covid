@@ -1,97 +1,62 @@
 
-import { World, System, Component, SystemStateComponent, Not } from 'ecsy'
-
+import { World, System, SystemStateComponent, Not, TagComponent } from 'ecsy'
+import { Chance } from 'chance'
+const chance = new Chance()
 class Game {
     world: World
     constructor() {
         this.world = new World()
     }
+    step(delta: number) {
+        this.world.execute(delta, performance.now())
+    }
     run() {
         this.init()
-        this.addEntity()
-        this.world.execute(0, 0)
-        setInterval(() => {
-            this.world.execute(0, 0)
-        }, 1000)
     }
-    addEntity() {
+    addPerson() {
         const entity = this.world.createEntity()
-        entity.addComponent(Person, { age: 5 })
-        setInterval(() => {
-            console.log("removing component")
-            entity.removeComponent(SomeOtherComponent)
-
-
-        }, 5000)
-        setInterval(() => {
-            console.log("removing both")
-            entity.removeComponent(Person)
-
-
-        }, 11000)
-        // entity.addComponent(SpriteResources)       
+        entity.addComponent(Person)
 
     }
     init() {
         console.log("we r runnin")
 
         this.world.registerComponent(Person)
-        this.world.registerComponent(SomeOtherComponent)
+        this.world.registerComponent(Identity)
         this.world.registerSystem(MainSystem)
     }
 }
 
-class SomeOtherComponent extends SystemStateComponent {
-    age: number
-    constructor() {
-        super();
-        this.age = 0
-        this.reset();
-    }
-
-    reset() {
-        this.age = 0
-    }
-}
-
-class Person {
-    name: string = "Aaron"
-    constructor() {
-        this.reset();
-    }
-
-    reset() {
-        this.name = 'empty';
-    }
+class Person extends TagComponent { }
+class Identity extends SystemStateComponent {
+    name: string = ""
+    age: number = 0
 }
 
 // Systems
 class MainSystem extends System {
     execute() {
         this.queries.added.results.forEach(entity => {
-            console.log("added 2nd component")
-            entity.addComponent(SomeOtherComponent);
-        });
-
-        this.queries.removed.results.forEach(entity => {
-            var resources = entity.getComponent(SomeOtherComponent);
-            console.log("removed", resources)
-        });
+            const identity = {
+                age: chance.integer({ min: 5, max: 100 }),
+                name: chance.name(),
+            }
+            console.log("new person:", identity)
+            entity.addComponent(Identity, identity);
+        })
 
         this.queries.normal.results.forEach(entity => {
-            const data = entity.getMutableComponent(SomeOtherComponent)
-            console.log("normal", data)
+            const data = entity.getMutableComponent(Identity)
+            console.log("person:", data)
             data.age++
 
-        });
-
+        })
     }
 }
 
 MainSystem.queries = {
-    added: { components: [Person, Not(SomeOtherComponent)] },
-    removed: { components: [Not(Person), SomeOtherComponent] },
-    normal: { components: [Person, SomeOtherComponent] }
+    added: { components: [Person, Not(Identity)] },
+    normal: { components: [Person, Identity] }
 };
 
 

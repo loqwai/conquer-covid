@@ -21,15 +21,21 @@ const App = () => {
 
   const requestRef = React.useRef(0)
   const previousTimeRef = React.useRef(0)
-  const game = React.useRef(new Game())
+  const gameContainer = React.useRef(new Game())
   
   React.useEffect(() => {    
+    gameContainer.current.run()
     requestRef.current = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(requestRef.current)
   }, [])
 
   React.useEffect(() => {
-    console.log('delta', delta)
+    const game = gameContainer.current
+    game.step(delta)
+    if( (frame%100) == 0){
+      console.log("adding person")
+      game.addPerson()
+    }
   }, [frame])
 
   const animate = (t) => {        
