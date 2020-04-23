@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import Runner from './ecs/town'
 
+const r = new Runner()
+r.run()
 ReactDOM.render(
   <React.StrictMode>
     <App />
