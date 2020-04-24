@@ -1,6 +1,7 @@
 
 import { World, System, SystemStateComponent, Not, TagComponent } from 'ecsy'
 import { Chance } from 'chance'
+import { createPerson } from '../models/room'
 const chance = new Chance()
 class Game {
     world: World
@@ -37,10 +38,7 @@ class Identity extends SystemStateComponent {
 class MainSystem extends System {
     execute() {
         this.queries.added.results.forEach(entity => {
-            const identity = {
-                age: chance.integer({ min: 5, max: 100 }),
-                name: chance.name(),
-            }
+            const identity = createPerson()
             console.log("new person:", identity)
             entity.addComponent(Identity, identity);
         })
