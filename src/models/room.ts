@@ -26,7 +26,7 @@ export interface Population {
   [key: string]: Person
 }
 
-interface Point {
+export interface Point {
   x: number
   y: number
 }

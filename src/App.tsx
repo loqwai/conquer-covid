@@ -1,7 +1,7 @@
 import React from 'react'
 import * as R from 'ramda'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom' 
+import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom'
 import { Chance } from 'chance'
 import * as Moment from 'moment'
 import useInterval from '@use-it/interval'
@@ -17,13 +17,13 @@ const chance = new Chance()
 const App = () => {
   const [time, setTime] = React.useState("")
   const [frame, setFrame] = React.useState(0)
-  const [delta, setDelta] = React.useState<number>(0)  
+  const [delta, setDelta] = React.useState<number>(0)
 
   const requestRef = React.useRef(0)
   const previousTimeRef = React.useRef(0)
   const gameContainer = React.useRef(new Game())
-  
-  React.useEffect(() => {    
+
+  React.useEffect(() => {
     gameContainer.current.run()
     requestRef.current = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(requestRef.current)
@@ -32,22 +32,24 @@ const App = () => {
   React.useEffect(() => {
     const game = gameContainer.current
     game.step(delta)
-    if( (frame%100) == 0){
+    if( (frame%250) == 0){
       console.log("adding person")
-      game.addPerson()
+      const id = game.addPerson()
+      console.log(id)
+      console.log(game.getPeople())
     }
   }, [frame])
 
-  const animate = (t) => {        
+  const animate = (t:number) => {
       const delta = t - previousTimeRef.current
       previousTimeRef.current = t
       setDelta(delta)
       setFrame(f => f + 1)
       requestRef.current = requestAnimationFrame(animate)
   }
-  
+
   return (
-    <div className="app">      
+    <div className="app">
       <h1 className="time">{frame}:{Number(delta).toFixed(4)}</h1>
     </div>
   )
