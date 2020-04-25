@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "13c8ee8c1d89786077dc954f033c69d9",
+    "revision": "a6e560070de74b10a97fe509257481f0",
     "url": "/conquer-covid/index.html"
   },
   {
-    "revision": "0a4ec2be18a9e9c4d36b",
+    "revision": "b2ae35f6190529a3e7dc",
     "url": "/conquer-covid/static/css/main.b72551ce.chunk.css"
   },
   {
-    "revision": "66e9f900496bc8bb3b37",
-    "url": "/conquer-covid/static/js/2.b2208844.chunk.js"
+    "revision": "8bd75c21799a28e43a1d",
+    "url": "/conquer-covid/static/js/2.f38940cd.chunk.js"
   },
   {
     "revision": "e8b0ae1bd2f59a85f300b3c60c50941a",
-    "url": "/conquer-covid/static/js/2.b2208844.chunk.js.LICENSE.txt"
+    "url": "/conquer-covid/static/js/2.f38940cd.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "0a4ec2be18a9e9c4d36b",
-    "url": "/conquer-covid/static/js/main.78bbedc8.chunk.js"
+    "revision": "b2ae35f6190529a3e7dc",
+    "url": "/conquer-covid/static/js/main.f5e2a313.chunk.js"
   },
   {
     "revision": "22caa1c34900ca10117d",
