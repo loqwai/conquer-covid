@@ -1,16 +1,10 @@
 import React from 'react'
-import * as R from 'ramda'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom'
-import { Chance } from 'chance'
-import * as Moment from 'moment'
-import useInterval from '@use-it/interval'
 import './App.css'
-import Room, {createPerson} from './models/room'
 import RoomsGrid from './RoomsGrid'
 import Game from './ecs/Game'
 
-const moment = Moment as any
 
 const App = () => {
   const [frame, setFrame] = React.useState(0)
@@ -38,7 +32,7 @@ const App = () => {
   }, [])
 
   React.useEffect(() => {
-    if(frame % 10 == 0) {
+    if(frame % 10 === 0) {
       game?.step(delta)
     }
   }, [game, frame, delta])

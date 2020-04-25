@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import useAnimationFrame from './hooks/useAnimationFrame'
 import Room from './models/room'
 import RoomComponent from './Room'
