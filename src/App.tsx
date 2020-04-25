@@ -39,7 +39,9 @@ const App = () => {
   }, [])
 
   React.useEffect(() => {
-    game?.step(delta)
+    if(frame % 10 == 0) {
+      game?.step(delta)
+    }
   }, [game, frame, delta])
 
   useInterval(() => {

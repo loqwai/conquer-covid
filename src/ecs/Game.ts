@@ -22,15 +22,22 @@ export default class Game {
     static rowCount = Math.floor(Game.roomCount / Game.columnCount)
     static maxBigness = 400
 
-    rooms: ReturnType<typeof createRooms>;
+    rooms: ReturnType<typeof createRooms>
+    time = 0
+    deltaSinceLastMove = 0
 
     constructor() {
         this.rooms = createRooms()
     }
 
     step(delta: number) {
+      this.deltaSinceLastMove += delta
+
+      if (this.deltaSinceLastMove < 100) return
+
       this.moveOneRandomPerson()
       this.wiggleThePeople()
+      this.deltaSinceLastMove = 0
     }
 
     moveOneRandomPerson = () => {
