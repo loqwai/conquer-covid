@@ -13,22 +13,38 @@ import Game from './ecs/Game'
 const moment = Moment as any
 
 const App = () => {
+  const [frame, setFrame] = React.useState(0)
+  const [delta, setDelta] = React.useState<number>(0)
   const [time, setTime] = React.useState<number>(moment().unix())
   const [game, setGame] = React.useState<Game | undefined>(undefined)
+  const requestRef = React.useRef(0)
+  const previousTimeRef = React.useRef(0)
 
   React.useEffect(() => {
     setGame(new Game())
   }, [])
 
+  // animation loop
+  React.useEffect(() => {
+    const animate = (t: number) => {
+      const delta = t - previousTimeRef.current
+      previousTimeRef.current = t
+      setDelta(delta)
+      setFrame(f => f + 1)
+      requestRef.current = requestAnimationFrame(animate)
+    }
+
+    requestRef.current = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(requestRef.current)
+  }, [])
+
+  React.useEffect(() => {
+    game?.step(delta)
+  }, [game, frame, delta])
+
   useInterval(() => {
     setTime(t => moment.unix(t).add(10, 'minutes').unix())
   }, 1000)
-
-  useInterval(() => {
-    if (R.isNil(game)) return;
-    game.moveOneRandomPerson();
-    game.wiggleThePeople();
-  }, 100)
 
   return (
     <div className="app">

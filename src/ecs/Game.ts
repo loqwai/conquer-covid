@@ -28,6 +28,11 @@ export default class Game {
         this.rooms = createRooms()
     }
 
+    step(delta: number) {
+      this.moveOneRandomPerson()
+      this.wiggleThePeople()
+    }
+
     moveOneRandomPerson = () => {
         const r1 = chance.pickone(this.rooms)
         const r2 = chance.pickone(this.rooms)
