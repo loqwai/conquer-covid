@@ -15,7 +15,6 @@ const moment = Moment as any
 const App = () => {
   const [frame, setFrame] = React.useState(0)
   const [delta, setDelta] = React.useState<number>(0)
-  const [time, setTime] = React.useState<number>(moment().unix())
   const [game, setGame] = React.useState<Game | undefined>(undefined)
   const requestRef = React.useRef(0)
   const previousTimeRef = React.useRef(0)
@@ -44,10 +43,6 @@ const App = () => {
     }
   }, [game, frame, delta])
 
-  useInterval(() => {
-    setTime(t => moment.unix(t).add(10, 'minutes').unix())
-  }, 1000)
-
   return (
     <div className="app">
       <AutoSizer>
@@ -67,7 +62,6 @@ const App = () => {
           )
         }}
       </AutoSizer>
-      <h1 className="time">{moment.unix(time).format()}</h1>
     </div>
   )
 }
