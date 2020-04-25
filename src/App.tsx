@@ -7,50 +7,49 @@ import * as Moment from 'moment'
 import useInterval from '@use-it/interval'
 import './App.css'
 import Room, {createPerson} from './models/room'
-import Town from './Town'
-
-import Game from './ecs/game'
+import RoomsGrid from './RoomsGrid'
+import Game from './ecs/Game'
 
 const moment = Moment as any
-const chance = new Chance()
 
 const App = () => {
-  const [time, setTime] = React.useState("")
-  const [frame, setFrame] = React.useState(0)
-  const [delta, setDelta] = React.useState<number>(0)
-
-  const requestRef = React.useRef(0)
-  const previousTimeRef = React.useRef(0)
-  const gameContainer = React.useRef(new Game())
+  const [time, setTime] = React.useState<number>(moment().unix())
+  const [game, setGame] = React.useState<Game | undefined>(undefined)
 
   React.useEffect(() => {
-    gameContainer.current.run()
-    requestRef.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(requestRef.current)
+    setGame(new Game())
   }, [])
 
-  React.useEffect(() => {
-    const game = gameContainer.current
-    game.step(delta)
-    if( (frame%250) == 0){
-      console.log("adding person")
-      const id = game.addPerson()
-      console.log(id)
-      console.log(game.getPeople())
-    }
-  }, [frame])
+  useInterval(() => {
+    setTime(t => moment.unix(t).add(10, 'minutes').unix())
+  }, 1000)
 
-  const animate = (t:number) => {
-      const delta = t - previousTimeRef.current
-      previousTimeRef.current = t
-      setDelta(delta)
-      setFrame(f => f + 1)
-      requestRef.current = requestAnimationFrame(animate)
-  }
+  useInterval(() => {
+    if (R.isNil(game)) return;
+    game.moveOneRandomPerson();
+    game.wiggleThePeople();
+  }, 100)
 
   return (
     <div className="app">
-      <h1 className="time">{frame}:{Number(delta).toFixed(4)}</h1>
+      <AutoSizer>
+        {({width, height}) => {
+          return width && height && (
+            <UncontrolledReactSVGPanZoom
+              width={width}
+              height={height}
+              tool="pan"
+              customToolbar={() => null}
+              customMiniature={() => null}
+            >
+              <svg className="world" viewBox={`0 0 ${Game.columnCount * Game.maxBigness} ${Game.rowCount * Game.maxBigness}`}>
+                <RoomsGrid columnCount={Game.columnCount} rooms={game?.rooms} />
+              </svg>
+            </UncontrolledReactSVGPanZoom>
+          )
+        }}
+      </AutoSizer>
+      <h1 className="time">{moment.unix(time).format()}</h1>
     </div>
   )
 }

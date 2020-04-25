@@ -5,24 +5,19 @@ import RoomComponent from './Room'
 
 interface Props {
   columnCount: number;
-  rooms: Room[]
+  rooms: Room[] | undefined
 }
 
 const Town = ({columnCount, rooms}: Props) => {
-  const [roomsData, setRoomsData] = React.useState(rooms.map(r => r.toData()))
-
-  useEffect(() => {
-    console.log('Town construction')
-    return () => console.log('Town destruction')
-  }, [])
+  const [roomsData, setRoomsData] = React.useState(rooms?.map(r => r.toData()))
 
   useAnimationFrame(() => {
-    setRoomsData(rooms.map(r => r.toData()))
+    setRoomsData(rooms?.map(r => r.toData()))
   })
 
   return (
     <>
-      {roomsData.map((room, i) => (
+      {roomsData?.map((room, i) => (
         <RoomComponent key={i} {...room} row={Math.floor(i / columnCount)} column={i % columnCount} />)
       )}
     </>
