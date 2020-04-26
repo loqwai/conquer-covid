@@ -32,9 +32,7 @@ const App = () => {
   }, [])
 
   React.useEffect(() => {
-    if(frame % 10 === 0) {
-      game?.step(delta)
-    }
+    game?.step(delta)
   }, [game, frame, delta])
 
   return (

@@ -1,4 +1,7 @@
 import * as R from 'ramda'
+
+import { World, System, Component} from 'ecsy'
+
 import { Chance } from 'chance'
 
 import Room, { createPerson } from '../models/room'
@@ -22,17 +25,22 @@ export default class Game {
     static rowCount = Math.floor(Game.roomCount / Game.columnCount)
     static maxBigness = 400
 
-    rooms: ReturnType<typeof createRooms>
+    rooms: Room[];
     time = 0
     deltaSinceLastMove = 0
+    world: World
 
     constructor() {
-        this.rooms = createRooms()
+        this.world = new World()
+        this.world.registerComponent(WiggleComponent)
+        this.world.registerSystem(WiggleSystem)
+        this.rooms = []
+        R.times(this.createRoom, Game.roomCount)
     }
 
     step(delta: number) {
-      this.deltaSinceLastMove += delta
-
+      this.time += delta
+      this.world.execute(delta, this.time)
       if (this.deltaSinceLastMove < 100) return
 
       this.moveOneRandomPerson()
@@ -55,5 +63,44 @@ export default class Game {
         this.rooms.forEach(r => r.introduceEntropy())
     }
 
+    createRoom = () => {
+      const initialRoomPeopleCount = Game.popCount / Game.roomCount
+      const people = R.times(createPerson, initialRoomPeopleCount)
+      const bigness = chance.integer({ min: 100, max: Game.maxBigness })
+
+      const room = new Room(people, { height: bigness, width: bigness })
+      const entity = this.world.createEntity()
+      entity.addComponent(WiggleComponent, { room })
+      this.rooms.push(room)
+    }
 }
+
+class WiggleComponent extends Component {
+  deltaWiggle = 0
+  room: Room | undefined
+
+  reset() {
+    this.deltaWiggle = 0
+    this.room = undefined
+  }
+}
+
+class WiggleSystem extends System {
+  execute(delta: number) {
+    this.queries.normal.results.forEach(entity => {
+      const data = entity.getMutableComponent(WiggleComponent)
+      data.deltaWiggle += delta
+      if(data.deltaWiggle > 100) {
+        data.deltaWiggle = 0
+        data.room?.introduceEntropy()
+      }
+    })
+
+  }
+}
+
+WiggleSystem.queries = {
+  normal: { components: [WiggleComponent] }
+}
+
 

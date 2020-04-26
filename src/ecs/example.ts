@@ -29,7 +29,7 @@ class Game {
 
 
         }, 11000)
-        // entity.addComponent(SpriteResources)       
+        // entity.addComponent(SpriteResources)
 
     }
     init() {
