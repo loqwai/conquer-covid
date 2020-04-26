@@ -1,7 +1,12 @@
 import React from 'react'
 import useAnimationFrame from './hooks/useAnimationFrame'
-import Room from './models/room'
+import { Person } from './models/room'
 import RoomComponent from './Room'
+
+interface Room {
+  people: Person[],
+  size: {width: number, height: number}
+}
 
 interface Props {
   columnCount: number;
@@ -9,10 +14,11 @@ interface Props {
 }
 
 const Town = ({columnCount, rooms}: Props) => {
-  const [roomsData, setRoomsData] = React.useState(rooms?.map(r => r.toData()))
+  const [roomsData, setRoomsData] = React.useState<Room[]>([])
 
   useAnimationFrame(() => {
-    setRoomsData(rooms?.map(r => r.toData()))
+    if (!rooms) return;
+    setRoomsData([...rooms])
   })
 
   return (

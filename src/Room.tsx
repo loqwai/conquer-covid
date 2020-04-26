@@ -1,6 +1,6 @@
 import React from 'react'
 import * as R from 'ramda'
-import { Population, Person } from './models/room'
+import { Person } from './models/room'
 
 import './SVGRenderer.css'
 
@@ -24,15 +24,15 @@ const PersonShape = ({ person }: { person: Person }) => (
 interface Props {
   row: number;
   column: number;
-  population: Population;
+  people: Person[];
   size: {
     height: number;
     width: number;
   }
 }
 
-const Room = ({ row, column, population, size }: Props) => {
-  if (!population) return null
+const Room = ({ row, column, people, size }: Props) => {
+  if (!people) return null
 
   const maxWidth = 400
   const maxHeight = 400
@@ -44,7 +44,7 @@ const Room = ({ row, column, population, size }: Props) => {
     <rect width={maxWidth} height={maxHeight} fill="transparent" stroke="#cccccc" />
     <g style={{transform: `translate(${offsetX}px, ${offsetY}px)`}}>
       <rect width={size.width} height={size.height} fill="transparent" stroke="black" />
-      {R.values(population).map(person => <PersonShape key={person.id} person={person} />)}
+      {people.map(person => <PersonShape key={person.id} person={person} />)}
     </g>
   </g>
 }

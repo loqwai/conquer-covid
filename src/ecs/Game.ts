@@ -1,22 +1,13 @@
 import * as R from 'ramda'
 
-import { World, System, Component} from 'ecsy'
+import { World, Entity, System, Component, createComponentClass} from 'ecsy'
 
 import { Chance } from 'chance'
 
-import Room, { createPerson } from '../models/room'
+import { createPerson, Person } from '../models/room'
+import Matter, { Engine, World as MatterWorld, Bodies, Body, Query} from 'matter-js'
 
 const chance = new Chance()
-
-const createRooms = () => {
-  const people = R.times(createPerson, Game.popCount)
-  chance.pickone(people).infected = true
-  const roomPops = R.splitEvery(Game.popCount / Game.roomCount, people)
-  return R.map(roomPop => {
-    const bigness = chance.integer({ min: 100, max: Game.maxBigness })
-    return new Room(roomPop, { height: bigness, width: bigness })
-  }, roomPops)
-}
 
 export default class Game {
     static popCount = 90;
@@ -25,82 +16,114 @@ export default class Game {
     static rowCount = Math.floor(Game.roomCount / Game.columnCount)
     static maxBigness = 400
 
-    rooms: Room[];
     time = 0
     deltaSinceLastMove = 0
     world: World
+    rooms: {people: Person[], size: {width: number, height: number}}[] = []
 
     constructor() {
         this.world = new World()
-        this.world.registerComponent(WiggleComponent)
-        this.world.registerSystem(WiggleSystem)
-        this.rooms = []
+        this.world.registerComponent(DeltaComponent)
+        this.world.registerComponent(RoomComponent)
+        this.world.registerSystem(DeltaSystem)
+        this.world.registerSystem(RoomSystem)
+
         R.times(this.createRoom, Game.roomCount)
     }
 
     step(delta: number) {
       this.time += delta
       this.world.execute(delta, this.time)
-      if (this.deltaSinceLastMove < 100) return
-
-      this.moveOneRandomPerson()
-      this.wiggleThePeople()
-      this.deltaSinceLastMove = 0
-    }
-
-    moveOneRandomPerson = () => {
-        const r1 = chance.pickone(this.rooms)
-        const r2 = chance.pickone(this.rooms)
-
-        if (R.isEmpty(r1.getPeople())) return
-
-        const person = chance.pickone(r1.getPeople())
-        r1.removePerson(person.id)
-        r2.addPerson(person)
-    }
-
-    wiggleThePeople = () => {
-        this.rooms.forEach(r => r.introduceEntropy())
     }
 
     createRoom = () => {
       const initialRoomPeopleCount = Game.popCount / Game.roomCount
       const people = R.times(createPerson, initialRoomPeopleCount)
       const bigness = chance.integer({ min: 100, max: Game.maxBigness })
+      const size = {width: bigness, height: bigness}
 
-      const room = new Room(people, { height: bigness, width: bigness })
       const entity = this.world.createEntity()
-      entity.addComponent(WiggleComponent, { room })
+      entity.addComponent(DeltaComponent)
+      entity.addComponent(RoomComponent, {people, size })
+
+      const room = {people, size}
       this.rooms.push(room)
     }
 }
 
-class WiggleComponent extends Component {
-  deltaWiggle = 0
-  room: Room | undefined
+const DeltaComponent = createComponentClass<{value: number}>({value: {default: 0}}, 'DeltaComponent')
 
-  reset() {
-    this.deltaWiggle = 0
-    this.room = undefined
-  }
-}
-
-class WiggleSystem extends System {
+class DeltaSystem extends System {
   execute(delta: number) {
     this.queries.normal.results.forEach(entity => {
-      const data = entity.getMutableComponent(WiggleComponent)
-      data.deltaWiggle += delta
-      if(data.deltaWiggle > 100) {
-        data.deltaWiggle = 0
-        data.room?.introduceEntropy()
-      }
+      const data = entity.getMutableComponent(DeltaComponent)
+      data.value += delta
     })
-
   }
 }
 
-WiggleSystem.queries = {
-  normal: { components: [WiggleComponent] }
+DeltaSystem.queries = {
+  normal: { components: [DeltaComponent] }
 }
 
+class RoomComponent extends Component {
+  engine: Engine;
+  people: Person[] = []
+  size = {width: 0, height: 0};
 
+  constructor() {
+    super()
+    this.engine = Engine.create();
+    this.reset()
+  }
+
+  reset() {
+    this.people = []
+    this.size = {width: 0, height: 0}
+    this.engine = this.setupEngine()
+  }
+
+  setupEngine = () => {
+    const { size } = this
+    const wallWidth = 1000
+    const engine = Engine.create()
+    engine.world.gravity.y = 0
+    MatterWorld.add(engine.world, [
+      Bodies.rectangle(size.width / 2, 0 - wallWidth / 2, size.width, wallWidth, { isStatic: true }),
+      Bodies.rectangle(size.width + wallWidth / 2, size.height / 2, wallWidth, size.height, { isStatic: true }),
+      Bodies.rectangle(size.width / 2, size.height + wallWidth / 2, size.width, wallWidth, { isStatic: true }),
+      Bodies.rectangle(0 - wallWidth / 2, size.height / 2, wallWidth, size.height, { isStatic: true }),
+    ])
+    return engine
+  }
+}
+
+class RoomSystem extends System {
+  execute(delta: number) {
+
+    this.queries.normal.results.forEach(entity => {
+      const {engine, size} = entity.getMutableComponent(RoomComponent)
+      const body = chance.pickone(engine.world.bodies)
+      if (body.isStatic) return // it's probably a wall
+      Body.applyForce(body, {
+        x: chance.integer({ min: 0, max: size.width }),
+        y: chance.integer({ min: 0, max: size.height }),
+      }, {
+        x: chance.floating({ min: -0.0001, max: 0.0001 }),
+        y: chance.floating({ min: -0.0001, max: 0.0001 }),
+      })
+      Matter.Engine.update(engine, delta)
+      const bodies = engine.world.bodies
+
+      bodies.forEach(b => {
+        // @ts-ignore
+        Query.collides(b, bodies)
+      })
+
+    })
+  }
+}
+
+RoomSystem.queries = {
+  normal: { components: [RoomComponent] }
+}
